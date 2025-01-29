@@ -51,8 +51,8 @@ int main(int argc, char** argv)
   char* password;
   char* confirm_password;
   char* url;
-  int pwc;
-  size_t i;
+  size_t pwc, uwc, i;
+  uint64_t wv = 1;
 
   // Check arguments
   if (argc < 2 || argc > 2)
@@ -76,11 +76,17 @@ int main(int argc, char** argv)
     return 1;
   }
 
+  for (i = 0; i < strlen(url); i++)
+  {
+    wv *= (uint16_t) url[i];
+  }
+
   // Generate attended password
   for (i = 0; i < ATTENDED_LENGTH; i++)
   {
-    pwc = password[i % strlen(password)];
-    attended[i] = CHARSET[(i + pwc + alias(i)) % strlen(CHARSET)];
+    pwc = (size_t) password[i % strlen(password)];
+    uwc = (size_t) url[i % strlen(url)];
+    attended[i] = CHARSET[(pwc + uwc + wv) * alias(i) % strlen(CHARSET)];
   }
 
   attended[ATTENDED_LENGTH] = '\0';
