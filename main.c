@@ -53,15 +53,22 @@ int main(int argc, char** argv)
   char* url;
   size_t pwc, uwc, i;
   uint64_t wv = 1;
+  int gen = 0;
 
   // Check arguments
-  if (argc < 2 || argc > 2)
+  if (argc < 2 || argc > 3)
   {
-    printf("Usage: %s <arg1>\n", argv[0]);
+    printf("Usage: %s <website.url> [generation]\n", argv[0]);
     return 1;
   }
 
   url = hostname(argv[1]);
+
+  if (argc == 3)
+  {
+    gen = atoi(argv[2]);
+  }
+  
 
   // Ask for password
   printf("Enter password: ");
@@ -86,7 +93,7 @@ int main(int argc, char** argv)
   {
     pwc = (size_t) password[i % strlen(password)];
     uwc = (size_t) url[i % strlen(url)];
-    attended[i] = CHARSET[(pwc + uwc + wv) * alias(i) % strlen(CHARSET)];
+    attended[i] = CHARSET[(pwc + uwc + wv + gen) * alias(i) % strlen(CHARSET)];
   }
 
   attended[ATTENDED_LENGTH] = '\0';
